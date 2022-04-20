@@ -39,6 +39,16 @@ def generate_launch_description():
         ]
     )
     robot_description = {"robot_description": robot_description_content}
+    robot_description_content1 = Command(
+        [
+            PathJoinSubstitution([FindExecutable(name="xacro")]),
+            " ",
+            PathJoinSubstitution(
+                [FindPackageShare("diffbot_description"), "urdf", "diffbot_system1.urdf.xacro"]
+            ),
+        ]
+    )
+    robot_description1 = {"robot_description": robot_description_content1}
 
     diffbot_diff_drive_controller = PathJoinSubstitution(
         [
@@ -53,6 +63,16 @@ def generate_launch_description():
         executable="robot_state_publisher",
         output="screen",
         parameters=[robot_description],
+    )
+
+    node_robot_state_publisher1 = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        output="screen",
+        remappings=[
+            ('/robot_description', '/hkh/robot_description'),
+        ],
+        parameters=[robot_description1],
     )
 
     controller_manager_node = Node(
@@ -93,6 +113,7 @@ def generate_launch_description():
         [
             arg_show_rviz,
             node_robot_state_publisher,
+            node_robot_state_publisher1,
             controller_manager_node,
             spawn_dd_controller,
             spawn_jsb_controller,
