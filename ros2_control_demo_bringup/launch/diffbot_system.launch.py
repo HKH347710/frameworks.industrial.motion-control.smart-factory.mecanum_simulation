@@ -29,16 +29,6 @@ def generate_launch_description():
     )
 
     # Get URDF via xacro
-    robot_description_content = Command(
-        [
-            PathJoinSubstitution([FindExecutable(name="xacro")]),
-            " ",
-            PathJoinSubstitution(
-                [FindPackageShare("diffbot_description"), "urdf", "diffbot_system.urdf.xacro"]
-            ),
-        ]
-    )
-    robot_description = {"robot_description": robot_description_content}
     robot_description_content1 = Command(
         [
             PathJoinSubstitution([FindExecutable(name="xacro")]),
@@ -48,7 +38,17 @@ def generate_launch_description():
             ),
         ]
     )
+    robot_description_content2 = Command(
+        [
+            PathJoinSubstitution([FindExecutable(name="xacro")]),
+            " ",
+            PathJoinSubstitution(
+                [FindPackageShare("diffbot_description"), "urdf", "diffbot_system2.urdf.xacro"]
+            ),
+        ]
+    )
     robot_description1 = {"robot_description": robot_description_content1}
+    robot_description2 = {"robot_description": robot_description_content2}
 
     diffbot_diff_drive_controller = PathJoinSubstitution(
         [
@@ -58,42 +58,68 @@ def generate_launch_description():
         ]
     )
 
-    node_robot_state_publisher = Node(
+    node_robot_state_publisher_amr1 = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
         output="screen",
-        parameters=[robot_description],
-    )
-
-    node_robot_state_publisher1 = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        output="screen",
-        remappings=[
-            ('/robot_description', '/hkh/robot_description'),
-        ],
+        namespace="amr1",
         parameters=[robot_description1],
     )
+    node_robot_state_publisher_amr2 = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        output="screen",
+        namespace="amr2",
+        parameters=[robot_description2],
+    )
 
-    controller_manager_node = Node(
+    controller_manager_node_amr1 = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        parameters=[robot_description, diffbot_diff_drive_controller],
+        parameters=[robot_description1, diffbot_diff_drive_controller],
+        namespace="amr1",
+        output={
+            "stdout": "screen",
+            "stderr": "screen",
+        },
+    )
+    controller_manager_node_amr2 = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[robot_description2, diffbot_diff_drive_controller],
+        namespace="amr2",
         output={
             "stdout": "screen",
             "stderr": "screen",
         },
     )
 
-    spawn_dd_controller = Node(
+    spawn_dd_controller_amr1 = Node(
         package="controller_manager",
         executable="spawner.py",
-        arguments=["diffbot_base_controller"],
+        namespace="amr1",
+        arguments=["diffbot_base_controller1"],
         output="screen",
     )
-    spawn_jsb_controller = Node(
+    spawn_dd_controller_amr2 = Node(
         package="controller_manager",
         executable="spawner.py",
+        namespace="amr2",
+        arguments=["diffbot_base_controller2"],
+        output="screen",
+    )
+
+    spawn_jsb_controller_amr1 = Node(
+        package="controller_manager",
+        executable="spawner.py",
+        namespace="amr1",
+        arguments=["joint_state_broadcaster"],
+        output="screen",
+    )
+    spawn_jsb_controller_amr2 = Node(
+        package="controller_manager",
+        executable="spawner.py",
+        namespace="amr2",
         arguments=["joint_state_broadcaster"],
         output="screen",
     )
@@ -112,11 +138,14 @@ def generate_launch_description():
     return LaunchDescription(
         [
             arg_show_rviz,
-            node_robot_state_publisher,
-            node_robot_state_publisher1,
-            controller_manager_node,
-            spawn_dd_controller,
-            spawn_jsb_controller,
+            node_robot_state_publisher_amr1,
+            node_robot_state_publisher_amr2,
+            controller_manager_node_amr1,
+            controller_manager_node_amr2,
+            spawn_dd_controller_amr1,
+            spawn_dd_controller_amr2,
+            spawn_jsb_controller_amr1,
+            spawn_jsb_controller_amr2,
             rviz_node,
         ]
     )

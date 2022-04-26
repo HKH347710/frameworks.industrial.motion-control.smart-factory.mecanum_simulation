@@ -26,7 +26,7 @@
     </collision>
 
 		<visual>
-      <origin xyz="1.0 1.0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <box size="${base_width} ${base_length} ${base_height}"/>
       </geometry>
@@ -61,7 +61,7 @@
       </collision>
 
       <visual>
-        <origin xyz="1 1 0" rpy="${PI/2} 0 0"/>
+        <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
         <geometry>
           <cylinder length="${wheel_len}" radius="${wheel_radius}"/>
         </geometry>
@@ -96,7 +96,7 @@
       </collision>
 
       <visual>
-        <origin xyz="1 1 0" rpy="${PI/2} 0 0"/>
+        <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
         <geometry>
           <cylinder length="${wheel_len}" radius="${wheel_radius}"/>
         </geometry>
@@ -129,7 +129,7 @@
       </collision>
 
       <visual>
-        <origin xyz="1 1 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
           <sphere radius="${caster_wheel_radius}"/>
         </geometry>
@@ -162,7 +162,7 @@
       </collision>
 
       <visual>
-        <origin xyz="1 1 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
           <sphere radius="${caster_wheel_radius}"/>
         </geometry>
