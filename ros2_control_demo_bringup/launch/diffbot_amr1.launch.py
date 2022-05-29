@@ -63,9 +63,13 @@ def generate_launch_description():
 
     spawn_dd_controller = Node(
         package="controller_manager",
+#        namespace="amr1",
         executable="spawner.py",
         arguments=["diffbot_base_controller", "--controller-manager", "/amr1/controller_manager"],
         output="screen",
+#        remappings=[
+#            ('/odom', '/amr1/odom'),
+#        ],
     )
     spawn_jsb_controller = Node(
         package="controller_manager",
